@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Usage tracking rules
+    match /usage/{usageId} {
+      // Allow create/update if the usageId format matches {userId}_{YYYY-MM-DD}
+      // and the data follows the schema
+      allow get: if true; // Allow checking usage count
+      allow create, update: if 
+        usageId.size() > 10 &&
+        request.resource.data.keys().hasAll(['count', 'lastUpdated']) &&
+        request.resource.data.count is int &&
+        request.resource.data.count > 0 &&
+        request.resource.data.lastUpdated == request.time;
+    }
+  }
+}

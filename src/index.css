@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #f0f4f0;
+  --color-brand-card: #ffffff;
+  --color-brand-accent: #2d6a4f;
+  --color-brand-dark: #1b4332;
+  --color-brand-muted: #52796f;
+  --color-brand-border: #d8e2dc;
+  --color-brand-score: #40916c;
+  
+  --font-sans: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-bg text-brand-dark antialiased;
+  }
+}

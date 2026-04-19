@@ -1,0 +1,10 @@
+{
+  "name": "GreenGuard",
+  "description": "AI-powered plant identification, health assessment, and care guidance system.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "vision"
+  ]
+}

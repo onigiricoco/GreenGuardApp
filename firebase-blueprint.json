@@ -1,0 +1,27 @@
+{
+  "entities": {
+    "UsageRecord": {
+      "title": "Usage Record",
+      "description": "Tracks daily API usage for a user.",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "description": "Number of times the user has performed an analysis today."
+        },
+        "lastUpdated": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of the last analysis."
+        }
+      },
+      "required": ["count", "lastUpdated"]
+    }
+  },
+  "firestore": {
+    "usage/{usageId}": {
+      "schema": "UsageRecord",
+      "description": "Daily usage tracking records."
+    }
+  }
+}
