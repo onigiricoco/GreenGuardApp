@@ -18,10 +18,7 @@ export default async function handler(req: any, res: any) {
     }
 
     // Initialize Gemini AI
-    const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
-    });
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const languagePrompt = lang === 'zh' ? "Please provide ALL text fields (summary, care tips, recommendations, etc.) in Simplified Chinese." : "Please provide ALL text fields in English.";
     
@@ -43,14 +40,15 @@ ${languagePrompt}
 Return the data in a structured JSON format.
 `;
 
-    const response = await model.generateContent({
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
       contents: [{
         parts: [
           { inlineData: { data: base64Image.split(",")[1] || base64Image, mimeType } },
           { text: PLANT_ANALYSIS_PROMPT }
         ]
       }],
-      generationConfig: {
+      config: {
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -97,7 +95,7 @@ Return the data in a structured JSON format.
       }
     });
 
-    const result = JSON.parse(response.response.text());
+    const result = JSON.parse(response.text || "{}");
     res.status(200).json(result);
   } catch (error) {
     console.error("Server Analysis Error:", error);
