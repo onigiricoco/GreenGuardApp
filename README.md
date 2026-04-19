@@ -15,12 +15,13 @@ To make the AI features and usage tracking work, you **MUST** configure the foll
 | Variable Name | Description | Where to get it |
 | --- | --- | --- |
 | `GEMINI_API_KEY` | Your Google Gemini API Key | Get one at [aistudio.google.com](https://aistudio.google.com/app/apikey) |
-| `VITE_FIREBASE_CONFIG` | (Optional) Your custom Firebase config | If you want to use your own Firebase project |
+
+**Note**: This project now uses a secure **Full-Stack** architecture. Your API key is stored safely on the server and is **never** exposed to the user's browser, making it safe for production use.
 
 ### 3. Setup on Vercel
 1. Create a new project on Vercel and import your repository.
-2. Vercel will automatically detect the **Vite** framework.
-3. Add the `GEMINI_API_KEY` variable as shown above.
+2. Vercel will automatically detect the settings.
+3. IMPORTANT: Add the `GEMINI_API_KEY` in **Settings > Environment Variables**.
 4. Click **Deploy**.
 
 ## 🛠 Features
