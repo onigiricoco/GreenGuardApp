@@ -1,23 +1,15 @@
-import express from "express";
-import { createServer as createViteServer } from "vite";
-import path from "path";
-import { fileURLToPath } from "url";
 import { GoogleGenAI, Type } from "@google/genai";
-import dotenv from "dotenv";
 
-dotenv.config();
+export const config = {
+  maxDuration: 60, // Increase timeout to 60s for AI processing
+};
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+export default async function handler(req: any, res: any) {
+  // Only allow POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
-const app = express();
-app.use(express.json({ limit: '20mb' }));
-
-// Initialize Gemini AI (Only on server)
-const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY || "");
-
-// API Route for Plant Analysis
-app.post("/api/analyze", async (req, res) => {
   try {
     const { base64Image, mimeType, lang } = req.body;
 
@@ -25,6 +17,8 @@ app.post("/api/analyze", async (req, res) => {
       return res.status(500).json({ error: "Gemini API key not configured on server." });
     }
 
+    // Initialize Gemini AI
+    const genAI = new GoogleGenAI(process.env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
     });
@@ -104,28 +98,9 @@ Return the data in a structured JSON format.
     });
 
     const result = JSON.parse(response.response.text());
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
     console.error("Server Analysis Error:", error);
     res.status(500).json({ error: "Failed to analyze image." });
   }
-});
-
-// For local dev, we run Vite as middleware
-if (process.env.NODE_ENV !== "production") {
-  const startDev = async () => {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: "spa",
-    });
-    app.use(vite.middlewares);
-    const PORT = 3000;
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`Dev server running at http://localhost:${PORT}`);
-    });
-  };
-  startDev();
 }
-
-// Export the app for Vercel Serverless Functions
-export default app;
